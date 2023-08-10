@@ -32,6 +32,7 @@ readable_report = profile.report(report_options={"output_format": "compact"})
 
 print(json.dumps(readable_report, indent=4))
 ```
+
 Note: The Data Profiler comes with a pre-trained deep learning model, used to efficiently identify **sensitive data** (PII / NPI). If desired, it's easy to add new entities to the existing pre-trained model or insert an entire new pipeline for entity recognition.
 
 For API documentation, visit the [documentation page](https://capitalone.github.io/DataProfiler/).
@@ -40,7 +41,7 @@ If you have suggestions or find a bug, [please open an issue](https://github.com
 
 If you want to contribute, visit the [contributing page](https://github.com/capitalone/dataprofiler/blob/main/.github/CONTRIBUTING.md).
 
-------------------
+---
 
 # Install
 
@@ -52,7 +53,7 @@ If the ML requirements are too strict (say, you don't want to install tensorflow
 
 Install from pypi: `pip install DataProfiler`
 
-------------------
+---
 
 # What is a Data Profile?
 
@@ -144,9 +145,11 @@ The format for a structured profile is below:
     }
 ]
 ```
-(*) Currently the correlation matrix update is toggled off. It will be reset in a later update. Users can still use it as desired with the is_enable option set to True.
+
+(\*) Currently the correlation matrix update is toggled off. It will be reset in a later update. Users can still use it as desired with the is_enable option set to True.
 
 The format for an unstructured profile is below:
+
 ```
 "global_stats": {
     "samples_used": int,
@@ -181,6 +184,7 @@ The format for an unstructured profile is below:
 ```
 
 The format for a graph profile is below:
+
 ```
 "num_nodes": int,
 "num_edges": int,
@@ -215,169 +219,172 @@ The format for a graph profile is below:
 
 #### global_stats:
 
-* `samples_used` - number of input data samples used to generate this profile
-* `column_count` - the number of columns contained in the input dataset
-* `row_count` - the number of rows contained in the input dataset
-* `row_has_null_ratio` - the proportion of rows that contain at least one null value to the total number of rows
-* `row_is_null_ratio` - the proportion of rows that are fully comprised of null values (null rows) to the total number of rows
-* `unique_row_ratio` - the proportion of distinct rows in the input dataset to the total number of rows
-* `duplicate_row_count` - the number of rows that occur more than once in the input dataset
-* `file_type` - the format of the file containing the input dataset (ex: .csv)
-* `encoding` - the encoding of the file containing the input dataset (ex: UTF-8)
-* `correlation_matrix` - matrix of shape `column_count` x `column_count` containing the correlation coefficients between each column in the dataset
-* `chi2_matrix` - matrix of shape `column_count` x `column_count` containing the chi-square statistics between each column in the dataset
-* `profile_schema` - a description of the format of the input dataset labeling each column and its index in the dataset
-    * `string` - the label of the column in question and its index in the profile schema
-* `times` - the duration of time it took to generate the global statistics for this dataset in milliseconds
+- `samples_used` - number of input data samples used to generate this profile
+- `column_count` - the number of columns contained in the input dataset
+- `row_count` - the number of rows contained in the input dataset
+- `row_has_null_ratio` - the proportion of rows that contain at least one null value to the total number of rows
+- `row_is_null_ratio` - the proportion of rows that are fully comprised of null values (null rows) to the total number of rows
+- `unique_row_ratio` - the proportion of distinct rows in the input dataset to the total number of rows
+- `duplicate_row_count` - the number of rows that occur more than once in the input dataset
+- `file_type` - the format of the file containing the input dataset (ex: .csv)
+- `encoding` - the encoding of the file containing the input dataset (ex: UTF-8)
+- `correlation_matrix` - matrix of shape `column_count` x `column_count` containing the correlation coefficients between each column in the dataset
+- `chi2_matrix` - matrix of shape `column_count` x `column_count` containing the chi-square statistics between each column in the dataset
+- `profile_schema` - a description of the format of the input dataset labeling each column and its index in the dataset
+  - `string` - the label of the column in question and its index in the profile schema
+- `times` - the duration of time it took to generate the global statistics for this dataset in milliseconds
 
 #### data_stats:
 
-* `column_name` - the label/title of this column in the input dataset
-* `data_type` - the primitive python data type that is contained within this column
-* `data_label` - the label/entity of the data in this column as determined by the Labeler component
-* `categorical` - ‘true’ if this column contains categorical data
-* `order` - the way in which the data in this column is ordered, if any, otherwise “random”
-* `samples` - a small subset of data entries from this column
-* `statistics` - statistical information on the column
-    * `sample_size` - number of input data samples used to generate this profile
-    * `null_count` - the number of null entries in the sample
-    * `null_types` - a list of the different null types present within this sample
-    * `null_types_index` - a dict containing each null type and a respective list of the indicies that it is present within this sample
-    * `data_type_representation` - the percentage of samples used identifying as each data_type
-    * `min` - minimum value in the sample
-    * `max` - maximum value in the sample
-    * `mode` - mode of the entries in the sample
-    * `median` - median of the entries in the sample
-    * `median_absolute_deviation` - the median absolute deviation of the entries in the sample
-    * `sum` - the total of all sampled values from the column
-    * `mean` - the average of all entries in the sample
-    * `variance` - the variance of all entries in the sample
-    * `stddev` - the standard deviation of all entries in the sample
-    * `skewness` - the statistical skewness of all entries in the sample
-    * `kurtosis` - the statistical kurtosis of all entries in the sample
-    * `num_zeros` - the number of entries in this sample that have the value 0
-    * `num_negatives` - the number of entries in this sample that have a value less than 0
-    * `histogram` - contains histogram relevant information
-        * `bin_counts` - the number of entries within each bin
-        * `bin_edges` - the thresholds of each bin
-    * `quantiles` - the value at each percentile in the order they are listed based on the entries in the sample
-    * `vocab` - a list of the characters used within the entries in this sample
-    * `avg_predictions` - average of the data label prediction confidences across all data points sampled
-    * `categories` - a list of each distinct category within the sample if `categorial` = 'true'
-    * `unique_count` - the number of distinct entries in the sample
-    * `unique_ratio` - the proportion of the number of distinct entries in the sample to the total number of entries in the sample
-    * `categorical_count` - number of entries sampled for each category if `categorical` = 'true'
-    * `gini_impurity` - measure of how often a randomly chosen element from the set would be incorrectly labeled if it was randomly labeled according to the distribution of labels in the subset
-    * `unalikeability` - a value denoting how frequently entries differ from one another within the sample
-    * `precision` - a dict of statistics with respect to the number of digits in a number for each sample
-    * `times` - the duration of time it took to generate this sample's statistics in milliseconds
-    * `format` - list of possible datetime formats
-* `null_replication_metrics` - statistics of data partitioned based on whether column value is null (index 1 of lists referenced by dict keys) or not (index 0)
-    * `class_prior` - a list containing probability of a column value being null and not null
-    * `class_sum`- a list containing sum of all other rows based on whether column value is null or not
-    * `class_mean`- a list containing mean of all other rows based on whether column value is null or not
+- `column_name` - the label/title of this column in the input dataset
+- `data_type` - the primitive python data type that is contained within this column
+- `data_label` - the label/entity of the data in this column as determined by the Labeler component
+- `categorical` - ‘true’ if this column contains categorical data
+- `order` - the way in which the data in this column is ordered, if any, otherwise “random”
+- `samples` - a small subset of data entries from this column
+- `statistics` - statistical information on the column
+  - `sample_size` - number of input data samples used to generate this profile
+  - `null_count` - the number of null entries in the sample
+  - `null_types` - a list of the different null types present within this sample
+  - `null_types_index` - a dict containing each null type and a respective list of the indicies that it is present within this sample
+  - `data_type_representation` - the percentage of samples used identifying as each data_type
+  - `min` - minimum value in the sample
+  - `max` - maximum value in the sample
+  - `mode` - mode of the entries in the sample
+  - `median` - median of the entries in the sample
+  - `median_absolute_deviation` - the median absolute deviation of the entries in the sample
+  - `sum` - the total of all sampled values from the column
+  - `mean` - the average of all entries in the sample
+  - `variance` - the variance of all entries in the sample
+  - `stddev` - the standard deviation of all entries in the sample
+  - `skewness` - the statistical skewness of all entries in the sample
+  - `kurtosis` - the statistical kurtosis of all entries in the sample
+  - `num_zeros` - the number of entries in this sample that have the value 0
+  - `num_negatives` - the number of entries in this sample that have a value less than 0
+  - `histogram` - contains histogram relevant information
+    - `bin_counts` - the number of entries within each bin
+    - `bin_edges` - the thresholds of each bin
+  - `quantiles` - the value at each percentile in the order they are listed based on the entries in the sample
+  - `vocab` - a list of the characters used within the entries in this sample
+  - `avg_predictions` - average of the data label prediction confidences across all data points sampled
+  - `categories` - a list of each distinct category within the sample if `categorial` = 'true'
+  - `unique_count` - the number of distinct entries in the sample
+  - `unique_ratio` - the proportion of the number of distinct entries in the sample to the total number of entries in the sample
+  - `categorical_count` - number of entries sampled for each category if `categorical` = 'true'
+  - `gini_impurity` - measure of how often a randomly chosen element from the set would be incorrectly labeled if it was randomly labeled according to the distribution of labels in the subset
+  - `unalikeability` - a value denoting how frequently entries differ from one another within the sample
+  - `precision` - a dict of statistics with respect to the number of digits in a number for each sample
+  - `times` - the duration of time it took to generate this sample's statistics in milliseconds
+  - `format` - list of possible datetime formats
+- `null_replication_metrics` - statistics of data partitioned based on whether column value is null (index 1 of lists referenced by dict keys) or not (index 0)
+  - `class_prior` - a list containing probability of a column value being null and not null
+  - `class_sum`- a list containing sum of all other rows based on whether column value is null or not
+  - `class_mean`- a list containing mean of all other rows based on whether column value is null or not
 
 ### Unstructured Profile
 
 #### global_stats:
 
-* `samples_used` - number of input data samples used to generate this profile
-* `empty_line_count` - the number of empty lines in the input data
-* `file_type` - the file type of the input data (ex: .txt)
-* `encoding` - file encoding of the input data file (ex: UTF-8)
-* `memory_size` - size of the input data in MB
-* `times` - duration of time it took to generate this profile in milliseconds
+- `samples_used` - number of input data samples used to generate this profile
+- `empty_line_count` - the number of empty lines in the input data
+- `file_type` - the file type of the input data (ex: .txt)
+- `encoding` - file encoding of the input data file (ex: UTF-8)
+- `memory_size` - size of the input data in MB
+- `times` - duration of time it took to generate this profile in milliseconds
 
 #### data_stats:
 
-* `data_label` - labels and statistics on the labels of the input data
-    * `entity_counts` - the number of times a specific label or entity appears inside the input data
-        * `word_level` - the number of words counted within each label or entity
-        * `true_char_level` - the number of characters counted within each label or entity as determined by the model
-        * `postprocess_char_level` - the number of characters counted within each label or entity as determined by the postprocessor
-    * `entity_percentages` - the percentages of each label or entity within the input data
-        * `word_level` - the percentage of words in the input data that are contained within each label or entity
-        * `true_char_level` - the percentage of characters in the input data that are contained within each label or entity as determined by the model
-        * `postprocess_char_level` - the percentage of characters in the input data that are contained within each label or entity as determined by the postprocessor
-    * `times` - the duration of time it took for the data labeler to predict on the data
-* `statistics` - statistics of the input data
-    * `vocab` - a list of each character in the input data
-    * `vocab_count` - the number of occurrences of each distinct character in the input data
-    * `words` - a list of each word in the input data
-    * `word_count` - the number of occurrences of each distinct word in the input data
-    * `times` - the duration of time it took to generate the vocab and words statistics in milliseconds
+- `data_label` - labels and statistics on the labels of the input data
+  - `entity_counts` - the number of times a specific label or entity appears inside the input data
+    - `word_level` - the number of words counted within each label or entity
+    - `true_char_level` - the number of characters counted within each label or entity as determined by the model
+    - `postprocess_char_level` - the number of characters counted within each label or entity as determined by the postprocessor
+  - `entity_percentages` - the percentages of each label or entity within the input data
+    - `word_level` - the percentage of words in the input data that are contained within each label or entity
+    - `true_char_level` - the percentage of characters in the input data that are contained within each label or entity as determined by the model
+    - `postprocess_char_level` - the percentage of characters in the input data that are contained within each label or entity as determined by the postprocessor
+  - `times` - the duration of time it took for the data labeler to predict on the data
+- `statistics` - statistics of the input data
+  - `vocab` - a list of each character in the input data
+  - `vocab_count` - the number of occurrences of each distinct character in the input data
+  - `words` - a list of each word in the input data
+  - `word_count` - the number of occurrences of each distinct word in the input data
+  - `times` - the duration of time it took to generate the vocab and words statistics in milliseconds
 
 ### Graph Profile
-* `num_nodes` - number of nodes in the graph
-* `num_edges` - number of edges in the graph
-* `categorical_attributes` - list of categorical edge attributes
-* `continuous_attributes` - list of continuous edge attributes
-* `avg_node_degree` - average degree of nodes in the graph
-* `global_max_component_size`: size of the global max component
+
+- `num_nodes` - number of nodes in the graph
+- `num_edges` - number of edges in the graph
+- `categorical_attributes` - list of categorical edge attributes
+- `continuous_attributes` - list of continuous edge attributes
+- `avg_node_degree` - average degree of nodes in the graph
+- `global_max_component_size`: size of the global max component
 
 #### continuous_distribution:
-* `<attribute_N>`: name of N-th edge attribute in list of attributes
-    * `name` - name of distribution for attribute
-    * `scale` - negative log likelihood used to scale and compare distributions
-    * `properties` - list of statistical properties describing the distribution
-        * [shape (optional), loc, scale, mean, variance, skew, kurtosis]
 
+- `<attribute_N>`: name of N-th edge attribute in list of attributes
+  - `name` - name of distribution for attribute
+  - `scale` - negative log likelihood used to scale and compare distributions
+  - `properties` - list of statistical properties describing the distribution
+    - [shape (optional), loc, scale, mean, variance, skew, kurtosis]
 
 #### categorical_distribution:
-* `<attribute_N>`: name of N-th edge attribute in list of attributes
-    * `bin_counts`: counts in each bin of the distribution histogram
-    * `bin_edges`: edges of each bin of the distribution histogram
 
-* times - duration of time it took to generate this profile in milliseconds
+- `<attribute_N>`: name of N-th edge attribute in list of attributes
+
+  - `bin_counts`: counts in each bin of the distribution histogram
+  - `bin_edges`: edges of each bin of the distribution histogram
+
+- times - duration of time it took to generate this profile in milliseconds
 
 # Support
 
 ### Supported Data Formats
 
-* Any delimited file (CSV, TSV, etc.)
-* JSON object
-* Avro file
-* Parquet file
-* Text file
-* Pandas DataFrame
-* A URL that points to one of the supported file types above
+- Any delimited file (CSV, TSV, etc.)
+- JSON object
+- Avro file
+- Parquet file
+- Text file
+- Pandas DataFrame
+- A URL that points to one of the supported file types above
 
 ### Data Types
 
-*Data Types* are determined at the column level for structured data
+_Data Types_ are determined at the column level for structured data
 
-* Int
-* Float
-* String
-* DateTime
+- Int
+- Float
+- String
+- DateTime
 
 ### Data Labels
 
-*Data Labels* are determined per cell for structured data (column/row when the *profiler* is used) or at the character level for unstructured data.
+_Data Labels_ are determined per cell for structured data (column/row when the _profiler_ is used) or at the character level for unstructured data.
 
-* UNKNOWN
-* ADDRESS
-* BAN (bank account number, 10-18 digits)
-* CREDIT_CARD
-* EMAIL_ADDRESS
-* UUID
-* HASH_OR_KEY (md5, sha1, sha256, random hash, etc.)
-* IPV4
-* IPV6
-* MAC_ADDRESS
-* PERSON
-* PHONE_NUMBER
-* SSN
-* URL
-* US_STATE
-* DRIVERS_LICENSE
-* DATE
-* TIME
-* DATETIME
-* INTEGER
-* FLOAT
-* QUANTITY
-* ORDINAL
+- UNKNOWN
+- ADDRESS
+- BAN (bank account number, 10-18 digits)
+- CREDIT_CARD
+- EMAIL_ADDRESS
+- UUID
+- HASH_OR_KEY (md5, sha1, sha256, random hash, etc.)
+- IPV4
+- IPV6
+- MAC_ADDRESS
+- PERSON
+- PHONE_NUMBER
+- SSN
+- URL
+- US_STATE
+- DRIVERS_LICENSE
+- DATE
+- TIME
+- DATETIME
+- INTEGER
+- FLOAT
+- QUANTITY
+- ORDINAL
 
 # Get Started
 
@@ -385,13 +392,13 @@ The format for a graph profile is below:
 
 The Data Profiler can profile the following data/file types:
 
-* CSV file (or any delimited file)
-* JSON object
-* Avro file
-* Parquet file
-* Text file
-* Pandas DataFrame
-* A URL that points to one of the supported file types above
+- CSV file (or any delimited file)
+- JSON object
+- Avro file
+- Parquet file
+- Text file
+- Pandas DataFrame
+- A URL that points to one of the supported file types above
 
 The profiler should automatically identify the file type and load the data into a `Data Class`.
 
@@ -492,14 +499,15 @@ print(json.dumps(report, indent=4))
 Note that if merged profiles had overlapping integer indices, when null rows are calculated the indices will be "shifted" to uninhabited values so that null counts and ratios are still accurate.
 
 ### Profiler Differences
+
 For finding the change between profiles with the same schema we can utilize the
 profile's `diff` function. The `diff` will provide overall file and sampling
 differences as well as detailed differences of the data's statistics. For
 example, numerical columns have both t-test to evaluate similarity and PSI (Population Stability Index) to quantify column distribution shift.
-More information is described in the Profiler section of the [Github Pages](
-https://capitalone.github.io/DataProfiler/).
+More information is described in the Profiler section of the [Github Pages](https://capitalone.github.io/DataProfiler/).
 
 Create the difference report like this:
+
 ```python
 import json
 import dataprofiler as dp
@@ -517,6 +525,7 @@ print(json.dumps(diff_report, indent=4))
 ```
 
 ### Profile a Pandas DataFrame
+
 ```python
 import pandas as pd
 import dataprofiler as dp
@@ -534,7 +543,9 @@ print(json.dumps(report["data_stats"][0], indent=4))
 ```
 
 ### Unstructured Profiler
+
 In addition to the structured profiler, DataProfiler provides unstructured profiling for the TextData object or string. The unstructured profiler also works with list[string], pd.Series(string) or pd.DataFrame(string) given profiler_type option specified as `unstructured`. Below is an example of the unstructured profiler with a text file.
+
 ```python
 import dataprofiler as dp
 import json
@@ -548,6 +559,7 @@ print(json.dumps(report, indent=4))
 ```
 
 Another example of the unstructured profiler with pd.Series of strings is given as below, with the profiler option `profiler_type='unstructured'`
+
 ```python
 import dataprofiler as dp
 import pandas as pd
@@ -562,7 +574,9 @@ print(json.dumps(report, indent=4))
 ```
 
 ### Graph Profiler
+
 DataProfiler also provides the ability to profile graph data from a csv file. Below is an example of the graph profiler with a graph data csv file:
+
 ```python
 import dataprofiler as dp
 import pprint
@@ -579,9 +593,12 @@ printer.pprint(report)
 **Visit the [documentation page](https://capitalone.github.io/DataProfiler/) for additional Examples and API details**
 
 # References
+
 ```
 Sensitive Data Detection with High-Throughput Neural Network Models for Financial Institutions
 Authors: Anh Truong, Austin Walters, Jeremy Goodsitt
 2020 https://arxiv.org/abs/2012.09597
 The AAAI-21 Workshop on Knowledge Discovery from Unstructured Data in Financial Services
 ```
+
+test
